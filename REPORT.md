@@ -79,6 +79,22 @@ The optimal action-value function Q we want is: $$Q^*(s,a) = \max_{\pi} \; \math
 
 What the agent really sees is a State $$s_t = ((x_1,a_1),(x_2,a_2),.....,(x_{t-1},a_{t-1}), x_t)$$
 
+## Metrics
+
+1. Episode Duration (Total Reward):
+Purpose: Measures the total reward collected by the agent in an episode
+
+2. Average Maximum Q-value for Fixed States:
+Purpose: Provides a more stable and less noisy measure of the policy network's learning progress and confidence by tracking the average of the highest predicted Q-values for a fixed set of states.
+
+3. Maximum Q-value Evolution During an Evaluation Episode:
+Purpose: Visualizes how the agent's estimated value for the current state (its maximum predicted Q-value) changes over time within a single evaluation episode. This helps in understanding the agent's perception of value fluctuations.
+
+4. Directional Fall Evaluation:
+Purpose: Specifically for CartPole and adapted for Minatar Breakout, this metric assesses if the trained policy has a bias towards the pole falling to the left or right, indicating potential imbalances in the learned control strategy.
+
 ## CartPole
 
 In this section we will explain in details what we do in CartPole, ensuring 
+
+## Breakout from Minatar
