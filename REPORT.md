@@ -1,6 +1,12 @@
 # Report on Reinforcement Learning: Solving MinAtar games using Deep Q-Learning
 
-In this project we implemented a Deep Q-learning algorithms in reinforcement learning context. We developped two DQN agents, one able to play the CartPole game and the other one Breakout from Minatar. In both cases we developped the agents from scratch. The first one is based on a script from the Reinforcement Learning (DQN) Tutorial but adapted in order to make it understandable for users that are not well familiarized with DQNs. The second agent, the one for Minatar, uses a similar way of scripting as the tutorial but instead of using a Multi-Layer Perceptron, we use a Convolutional Neural Network to make the script more closer to the support paper of Mnih et al. (2013).
+In this project we implemented a Deep Q-learning algorithms in reinforcement learning context. We developped two DQN agents, one able to play the CartPole game and the other one Breakout from Minatar. In both cases we developped the agents from scratch. The first one is based on a script from the Reinforcement Learning (DQN) Tutorial but adapted in order to make it understandable for users that are not well familiarized with DQNs. The second agent, the one for Minatar, uses a similar way of scripting as the tutorial but instead of using a Multi-Layer Perceptron (MLP), we use a Convolutional Neural Network (CNN) to make the script more closer to the support paper of Mnih et al. (2013).
+
+## Main contributions of the paper Mnih et al. (2013)
+
+1. Implementation of Experience Replay
+2. Using a Neuronal Network for the target
+3. Using CNN for Atari 2600 games (and in general for inputs that are images) in order to estimate the Q function
 
 ## About Deep Q-learning
 
@@ -22,8 +28,21 @@ We can do so in two main ways: either in a parametric way, meaning that we suppo
 
 ## About the Bellman equation
 
-Since we use stochastic gradient descent (SGD) and mini-batches, we start from the Bellman optimality equation for the action-value function: $$Q^{*}(s,a) = E\left[r + \gamma \max_{a'} Q^{*}(s', a')\right]$$ where the expectation is over the next state $s'$ given the current state-action pair $(s,a)$.
-In practice, this expectation is approximated using a single sampled transition. Therefore, we use the following sample-based update: $$Q^{*}(s,a) = r + \gamma \max_{a'} Q^{*}(s', a')$$
+Since we use stochastic gradient descent (SGD) and mini-batches, we start from the Bellman optimality equation for the action-value function:
+
+$$
+Q^{Optimal}(s,a) = \mathbb{E}[r + \gamma \max_{a'} Q^{Optimal}(s', a')]
+$$
+
+where the expectation is over the next state $s'$ given the current state-action pair $(s,a)$.
+
+In practice, this expectation is approximated using a single sampled transition. Therefore, we use the following sample-based update:
+
+$$
+Q^{Optimal}(s,a) = r + \gamma \max_{a'} Q^{Optimal}(s', a')
+$$
+
+
 
 ## What was done in the past
 
@@ -51,9 +70,9 @@ $$
 y_i = r + \gamma \max_{a'} Q(s',a';\theta_{i-1})
 $$
 
-This target value is derived from the Bellman optimality equation and represents the one-step bootstrapped estimate of the optimal Q-value.  
+This target value is derived from the Bellman optimality equation and represents the one-step approximation of the optimal Q.  
 
-When minimizing the loss with respect to the weights, we arrive at the following gradient:
+When minimizing the loss with respect to the weights, we get at the following gradient:
 
 $$
 \nabla_{\theta_i} L_i(\theta_i) =
@@ -65,9 +84,9 @@ When using Stochastic Gradient Descent (SGD), the expectation term can be approx
 
 The model is updated at each time step, where a time step corresponds to a single interaction between the agent and the environment: the agent observes the current state, selects an action, receives a reward, and transitions to a new state. Each observed transition $(s_t, a_t, r_t, s_{t+1})$ is stored in a replay memory buffer.
 
-Instead of training the network using only the most recent transition, a random minibatch of transitions is sampled from the replay memory at every time step to perform a gradient descent update. By using this procedure, the model avoids strong correlations between consecutive and similar states. Moreover, it allows previously observed transitions to be reused multiple times, improving data efficiency and making the training process more stable.
+The main problem in previous works is that when training, the states where quite similars. This is due to the fact that, for example, when training CartPole, if the Agent moved the pole to the left multiple times and it gave a reward, it will probably continue to make the action to go to the left again. Instead of training the network using only the most recent transition, a random minibatch of transitions is sampled from the replay memory at every time step to perform a gradient descent update. By using this procedure, the model avoids strong correlations between consecutive and similar states. Moreover, it allows previously observed transitions to be reused multiple times, improving data efficiency and making the training process more stable.
 
-Each time the model takes an action, it follows an $\varepsilon$-greedy policy: with probability $\varepsilon$ a random action is selected to encourage exploration, and with probability $1-\varepsilon$ the action with the highest estimated Q-value is chosen according to the current network parameters.
+Each time the model takes an action, it follows an $\varepsilon$-greedy policy: with probability $\varepsilon$ a random action is selected to explore new actions instead of the one that we think maximizes Q, and with probability $1-\varepsilon$ the action with the highest estimated Q-value is chosen according to the current network parameters.
 
 Since the transitions sampled from the replay memory may have been generated by older policies, the learning process is off-policy, which justifies the use of Q-learning in the DQN framework.
 
@@ -78,6 +97,26 @@ The idea of the procedure is quite easy: the Agent takes an action, the Environm
 The optimal action-value function Q we want is: $$Q^*(s,a) = \max_{\pi} \; \mathbb{E} \left[ \sum_{t=0}^{\infty} \gamma^t r_t \;\middle|\; s_0 = s,\; a_0 = a,\; \pi \right]$$.
 
 What the agent really sees is a State $$s_t = ((x_1,a_1),(x_2,a_2),.....,(x_{t-1},a_{t-1}), x_t)$$
+
+## Explanation of the general Algorithm
+
+### The algorithm
+
+In the paper Mnih et al. 2013 the algorithm is as follows:
+
+First, they **initialize a buffer for the replay memory with capacity N** and the Q function with random weights. 
+
+Second, they use an outer loop for M episodes that gives the real state (the image) of the game, they call that $$x_t$$ and **they use a CNN to feed it to the model**. 
+
+Third, in an inner loop for t in 1 to T times, the Agent will choose with probability $$\epsilon$$ a random action $$a_t$$ and with probability $$1-\epsilon$$ the action that maximizes the Q function based on state $$s_t$$. Then, the environment will yield a reward $$r_t$$ and the new state $$s_{t+1}$$. **Following that, they store the processed image of state, the reward and the action in t and the new processed state in the memory replay**. Finally, they take a mini-batch randomly from the memory replay, compute the target y and perform a gradient descent. 
+
+The elements that are in bold are the ones that correspond to the innovation of the paper.
+
+### Some remarks of implementation
+
+In order to have a more stable process we initialize two neural networks: one for the policy and the second for the target, both of them are initialized at the beginning and updated at each episode. The first one, the policy, is updated first in a function called "optimize_model" which updates the weights using the minibatch sample from the replay memory. The second one, the target, is updated afterwards, without any backpropagation and learns at a small rate from the policy and at a bigger rate from its previous value. This update method is called soft update and it differs from what the authors did in the paper Mnih et al. 2013. In the paper they updated the target network less frequently.
+
+The reason behind using a neural network for the target is only for computational reasons. In fact, because the policy is a neural network and the target depends on the policy network’s outputs, using a neural network for the target ensures that the target can compute the Q-values consistently.
 
 ## Metrics
 
@@ -91,10 +130,28 @@ Purpose: Provides a more stable and less noisy measure of the policy network's l
 Purpose: Visualizes how the agent's estimated value for the current state (its maximum predicted Q-value) changes over time within a single evaluation episode. This helps in understanding the agent's perception of value fluctuations.
 
 4. Directional Fall Evaluation:
-Purpose: Specifically for CartPole and adapted for Minatar Breakout, this metric assesses if the trained policy has a bias towards the pole falling to the left or right, indicating potential imbalances in the learned control strategy.
+Purpose: Specifically for CartPole and adapted for Minatar Breakout, this metric assesses if the trained policy has a bias towards the pole falling to the left or right, indicating potential imbalances in the learned control strategy.##
 
-## CartPole
+## CartPole 
 
-In this section we will explain in details what we do in CartPole, ensuring 
+In this section we explain in detail our approach for CartPole.  
+Because the CartPole environment is represented by only four variables, we can directly apply a fully connected neural network (MLP) to approximate the Q-function. The network outputs one Q-value for each possible action.
+
+### Metric evaluation
+
+For the first one, we clearly see that we reach 200 reward after about 60 episodes. The curve is not smooth at all, there are plenty of peaks and drops throught the episodes. In particular, we see that the number of rewards rapidly increases at the begining but it drops quickly after the reaching the first local maximum at 80 episodes. We clearly see three highly oscillating spans in the curve, between 110 and 130 episodes, between 410 and 490 and after 550 episodes. Overall, we see that this metric is not well suited for studing the evolution of the rewards because it does not seems like the model follows a clear tendency even though we can still see a clear progression in the number of rewards with the episodes. 
+
+The second metric is meant to understand if our policy is working correctly. In fact, we expect that our policy to be increasing with the number of episodes as the model is learning more and we take $$\epsilon = 0$$ so no place for random actions. More precisely, what we do is to take 128 states and apply only the estimated optimal policy (to take the action that maximizes the Q function) to each one. The plot shows the mean of these maximums per episode. We see in the graph that the curve is much more smoother than for the previous metric. We observe that at the begining the maximum is decreasing, this makes sense because the Agent does not know yet what are the best actions and probably it is learning more by taking random action than by following a small set of replay memory. Once it has leanrnt 110 episodes, the maximum starts increasing, meaning that now the Agent nows better when to take which action and thus is depending less on the random actions. Following the peak at 250 episodes, the maximum decreases slowly to levels below the initial maximum. This might be due to overfitting, in fact the model learnt too many episodes and thus it can no longer learn new solutions for new situations.
+
+The third metric shows for a certain episode how the maximum of Q evolves for each time step (each action the Agent took). We clearly see a decreasing tendency, meaning that the model estimates everytime a smaller value for the maximum of Q. This means that the agent gives at each step smaller value to future actions (the policy) meaning that it will take actions that favorises in priority the current state more than the future ones. This makes the model probably more vulnerable in the future causing him to lose the game at a certain point in the episode.
+
+Finally, the last metric shows the directional bias of the Agent. We clearly see that the Agent falled to the right in 1000 episodes meaning that there is a clear directional bias. An improvement could be made in terms of the $$\epsilon$$ and the $$\tau$$ in order to make the Agent chose arbitrarely to take more random actions forcing him to learn more situation and thus preventing him to fail always at one side. During the duration of the project, we tried multiple trainings and eventhough most of the time the Agent always falls at either of the sides. We managed to get one output where the agent falled 25% of the time to the left and 75% to the right.
 
 ## Breakout from Minatar
+
+Following Mnih et al. (2013), for Breakout the environment provides a 2D representation of the game (pixels). Therefore, we use a convolutional neural network (CNN) to approximate the Q-function from these states.  
+Our CNN consists of two convolutional layers followed by two fully connected layers with ReLU activations. This design allows the network to extract spatial features from the game frames before computing the Q-values for all possible actions, closely following the architecture described in the original DQN paper.
+
+# References
+
+Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., & Riedmiller, M. (2013). Playing Atari with Deep Reinforcement Learning. *arXiv preprint arXiv:1312.5602*. https://doi.org/10.48550/arXiv.1312.5602
