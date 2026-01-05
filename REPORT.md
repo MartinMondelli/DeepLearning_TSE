@@ -143,7 +143,7 @@ Because the CartPole environment is represented by only four variables, we can d
 
 ### Metric evaluation
 
-For the first one, we clearly see that we reach 200 reward after about 60 episodes. The curve is not smooth at all, there are plenty of peaks and drops throught the episodes. In particular, we see that the number of rewards rapidly increases at the begining but it drops quickly after the reaching the first local maximum at 80 episodes. We clearly see three highly oscillating spans in the curve, between 110 and 130 episodes, between 410 and 490 and after 550 episodes. Overall, we see that this metric is not well suited for studing the evolution of the rewards because it does not seems like the model follows a clear tendency even though we can still see a clear progression in the number of rewards with the episodes. 
+For the first one, we clearly see that we reach 200 reward after about 60 episodes. The curve is not smooth at all, there are plenty of peaks and drops throught the episodes. In particular, we see that the number of rewards rapidly increases at the begining but it drops quickly after the reaching the first local maximum at 80 episodes. We clearly see three highly oscillating spans in the curve, between 110 and 130 episodes, between 410 and 490 and after 550 episodes. From the moving average, it seems clear that the Agent is learning as the episodes progress. Overall, we see that this metric is not well suited for studing the evolution of the rewards because it does not seems like the model follows a clear tendency even though we can still see a clear progression in the number of rewards with the episodes. 
 
 ![CartPole total rewards per episode](images_cartpole/Total_Rewards.png)
 
