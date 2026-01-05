@@ -152,6 +152,16 @@ Finally, the last metric shows the directional bias of the Agent. We clearly see
 Following Mnih et al. (2013), for Breakout the environment provides a 2D representation of the game (pixels). Therefore, we use a convolutional neural network (CNN) to approximate the Q-function from these states.  
 Our CNN consists of two convolutional layers followed by two fully connected layers with ReLU activations. This design allows the network to extract spatial features from the game frames before computing the Q-values for all possible actions, closely following the architecture described in the original DQN paper.
 
+### Metric evaluation
+
+For the first metric we see the same problem as for the CartPole setting, the courve oscilates a lot but it seems to be stationary. For the 1000 episodes, it seels to stagnate arround 12 rewards and for the 2000 episodes, it jumps to 15 rewards. We clearly see a progress when increasing the number of episodes. It would be interesting to test with more episodes (likely 5000) the outcome. We did not test with more episodes it due to the training time and capacity limitations. From the litterature, some examples with more episodes can be found in the blog of Stas Olekhnovich quoted in the References. 
+
+For the second metric, we clearly see a decreacing tendency. In fact, in this case we also took 128 states and followed them for 500 episodes taking the average of the maximum of Q function and we found that 
+
+For the third metric, we see that the value of the maximum of Q is stable at the begining of the episode but it decreases slowly afterwards, it drops to 0. This behavior is weird in the sense that the Agent seems to be value future almost as nothing (close to 0), meaning that it will try to solve current conjonctures without considering the issues it might cause in the future. The fact that it drops to 0 is even worst, our Agent might be thinking that there are almost (or none) blocks left, which obviusly leads to erratic behavior at the middle of the game. When comparing to the GIF for breakout, we see that these behavior becomes clear: in the games where the Agent manages to destroy a lot of blocks, it makes really big blinds which causes the game to end drastically. 
+
+Finally, for the last metric, the Agent has a certain directional bias for the left but this is quite small over the last 100 episodes, 52% of actions were left against 48% which were right. This is not surprising as the numbers are not that different but it shows that the Agent is not trained evenly to go to the right or to the left which might cause some early stopping of the episodes. 
+
 # References
 
 Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., & Riedmiller, M. (2013). Playing Atari with Deep Reinforcement Learning. *arXiv preprint arXiv:1312.5602*. https://doi.org/10.48550/arXiv.1312.5602
