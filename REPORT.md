@@ -158,8 +158,10 @@ The third metric shows for a certain episode how the maximum of Q evolves for ea
 Finally, the last metric shows the directional bias of the Agent. We clearly see that the Agent falled to the right in 1000 episodes meaning that there is a clear directional bias. An improvement could be made in terms of the $$\epsilon$$ and the $$\tau$$ in order to make the Agent chose arbitrarely to take more random actions forcing him to learn more situation and thus preventing him to fail always at one side. During the duration of the project, we tried multiple trainings and eventhough most of the time the Agent always falls at either of the sides. We managed to get one output where the agent falled 25% of the time to the left and 75% to the right.
 
 For printing results please refer to the CartPole Notebook:
+```bash
 Falls left : 0
 Falls right: 1000
+```
 
 ## Breakout from Minatar
 
@@ -187,12 +189,15 @@ For the third metric, we see that the value of the maximum of Q is stable at the
 Finally, for the last metric that is evaluated over the last 100 episodes, the Agent has a certain directional bias in favour of the action Left but it is quite small: 52% of actions were Left against 48% which were Right. This is not surprising as the numbers are not that different but it shows that the Agent is not trained evenly to go to the right or to the left which might cause some early stopping of the episodes due to blounders. 
 
 For printing results please refer to the Breakout Notebook:
+
+```bash
 --- Summary of directonnaly bias ---
 Total 'LEFT' actions: 2091
 Total 'RIGHT' actions: 1935
 Ratio 'LEFT': 0.52
 Ratio 'RIGHT': 0.48
 The Agent seems to have a preference for the 'LEFT'.
+```
 
 ## For future works
 
