@@ -137,15 +137,27 @@ Purpose: Specifically for CartPole and adapted for Minatar Breakout, this metric
 In this section we explain in detail our approach for CartPole.  
 Because the CartPole environment is represented by only four variables, we can directly apply a fully connected neural network (MLP) to approximate the Q-function. The network outputs one Q-value for each possible action.
 
+![CartPole GIF](images_cartpole/cartpole_animation.gif)
+
 ### Metric evaluation
 
 For the first one, we clearly see that we reach 200 reward after about 60 episodes. The curve is not smooth at all, there are plenty of peaks and drops throught the episodes. In particular, we see that the number of rewards rapidly increases at the begining but it drops quickly after the reaching the first local maximum at 80 episodes. We clearly see three highly oscillating spans in the curve, between 110 and 130 episodes, between 410 and 490 and after 550 episodes. Overall, we see that this metric is not well suited for studing the evolution of the rewards because it does not seems like the model follows a clear tendency even though we can still see a clear progression in the number of rewards with the episodes. 
 
+![CartPole total rewards per episode](images_cartpole/Total_Rewards.png)
+
 The second metric is meant to understand if our policy is working correctly. In fact, we expect that our policy to be increasing with the number of episodes as the model is learning more and we take $$\epsilon = 0$$ so no place for random actions. More precisely, what we do is to take 128 states and apply only the estimated optimal policy (to take the action that maximizes the Q function) to each one. The plot shows the mean of these maximums per episode. We see in the graph that the curve is much more smoother than for the previous metric. We observe that at the begining the maximum is decreasing, this makes sense because the Agent does not know yet what are the best actions and probably it is learning more by taking random action than by following a small set of replay memory. Once it has leanrnt 110 episodes, the maximum starts increasing, meaning that now the Agent nows better when to take which action and thus is depending less on the random actions. Following the peak at 250 episodes, the maximum decreases slowly to levels below the initial maximum. This might be due to overfitting, in fact the model learnt too many episodes and thus it can no longer learn new solutions for new situations.
+
+![CartPole total rewards per episode](images_cartpole/Metric2.png)
 
 The third metric shows for a certain episode how the maximum of Q evolves for each time step (each action the Agent took). We clearly see a decreasing tendency, meaning that the model estimates everytime a smaller value for the maximum of Q. This means that the agent gives at each step smaller value to future actions (the policy) meaning that it will take actions that favorises in priority the current state more than the future ones. This makes the model probably more vulnerable in the future causing him to lose the game at a certain point in the episode.
 
+![CartPole total rewards per episode](images_cartpole/Metric3.png)
+
 Finally, the last metric shows the directional bias of the Agent. We clearly see that the Agent falled to the right in 1000 episodes meaning that there is a clear directional bias. An improvement could be made in terms of the $$\epsilon$$ and the $$\tau$$ in order to make the Agent chose arbitrarely to take more random actions forcing him to learn more situation and thus preventing him to fail always at one side. During the duration of the project, we tried multiple trainings and eventhough most of the time the Agent always falls at either of the sides. We managed to get one output where the agent falled 25% of the time to the left and 75% to the right.
+
+For printing results please refer to the CartPole Notebook:
+Falls left : 0
+Falls right: 1000
 
 ## Breakout from Minatar
 
