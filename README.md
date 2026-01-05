@@ -30,12 +30,12 @@ Tracked metrics:
 
 ```
 .
-├── README.md                    # Project overview and usage instructions
-├── REPORT.md                    # Theoretical background and analysis
-├── CartPole.ipynb               # CartPole experiments (MLP-based DQN)
-├── Breakout.ipynb               # MinAtar Breakout experiments (CNN-based DQN)
-├── images_cartpole/             # CartPole results and visualizations
-└── images_breakout/             # Breakout results and visualizations
+├── README.md                    #Project overview and usage instructions
+├── REPORT.md                    #Theoretical background and analysis
+├── CartPole.ipynb               #CartPole experiments (MLP-based DQN)
+├── Breakout.ipynb               #MinAtar Breakout experiments (CNN-based DQN)
+├── images_cartpole/             #CartPole results and visualizations
+└── images_breakout/             #Breakout results and visualizations
 ```
 ## Usage
 
