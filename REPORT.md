@@ -194,6 +194,10 @@ Ratio 'LEFT': 0.52
 Ratio 'RIGHT': 0.48
 The Agent seems to have a preference for the 'LEFT'.
 
+## For future works
+
+Other environments that could have been tested include from Gymnasium: MountainCar, Acrobot, LunarLander, FrozenLake, and additional MinAtar games such as SpaceInvaders. These environments offer diverse challenges, including continuous vs. discrete state spaces, stochastic dynamics, and sparse or delayed rewards, making them suitable for evaluating the generalization and robustness of DQN agents.
+
 # References
 
 Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., & Riedmiller, M. (2013). Playing Atari with Deep Reinforcement Learning. *arXiv preprint arXiv:1312.5602*. https://doi.org/10.48550/arXiv.1312.5602
