@@ -1,6 +1,6 @@
 # Report on Reinforcement Learning: Solving MinAtar games using Deep Q-Learning
 
-In this project we implemented a Deep Q-learning algorithms in reinforcement learning context. We developped two DQN agents, one able to play the CartPole game and the other one Breakout from Minatar. In both cases we developped the agents from scratch. The first one is based on a script from the Reinforcement Learning (DQN) Tutorial but adapted in order to make it understandable for users that are not well familiarized with DQNs. The second agent, the one for Minatar, uses a similar way of scripting as the tutorial but instead of using a Multi-Layer Perceptron (MLP), we use a Convolutional Neural Network (CNN) to make the script more closer to the support paper of Mnih et al. (2013).
+In this project we implemented a Deep Q-learning algorithms in reinforcement learning context. We developped two DQN agents, one able to play the CartPole game and the other Breakout from Minatar. In both cases we developped the agents from scratch. The first one is based on a script from the Reinforcement Learning (DQN) Tutorial but adapted in order to make it understandable for users that are not well familiarized with DQNs. The second agent, the one for Minatar, uses a similar way of scripting as the tutorial but instead of using a Multi-Layer Perceptron (MLP), we use a Convolutional Neural Network (CNN) to make the script more closer to the support paper of Mnih et al. (2013).
 
 ## Main contributions of the paper Mnih et al. (2013)
 
@@ -14,17 +14,17 @@ First, we will begin by explaining the mathematical foundations and working of D
 
 ### Main idea
 
-Q-learning is included in Reinforcement Learning (RL). The idea of RL is to make an Agent (the virtual robot) and an Environment (here a game), the goal of the Agent is to perform well in the game, this is done through a system of rewards, where the Agent receives a certain reward for good actions. The goal of the Agent is to maximize this reward $$R_T = \sum_{t'=t}^T \gamma^{t'-t} r_{t'}$$ where $$\gamma$$ is the discount factor and r() is the reward a each perior. A key factor is that the Agent is not given any prior training or strategy in the game, it is up to it (thorugh interactions with the environment) to learn the best strategy it can.
+Q-learning is included in Reinforcement Learning (RL). The idea of RL is to make an Agent (a virtual robot) interact with an Environment (here a game). The goal of the Agent is to perform well in the game. This is done through a system of rewards, where the Agent receives a certain reward for good actions. The goal of the Agent is to maximize this reward: $$R_T = \sum_{t'=t}^T \gamma^{t'-t} r_{t'}$$ where $$\gamma$$ is the discount factor and r() is the reward at each perior. A key factor is that the Agent is not given any prior training or strategy in the game, it is up to it (thorugh interactions with the environment) to learn the best strategy it can.
 
-In the context of Q-learning, what the Agent observes is an adaptation of the State s, this is similar to the picture of what is happening in the Environment at t. A key remark is that one of the innovations of the paper of Mnih et al. (2013) is the Memory Replay, which gives the agent more information of the previous states, we will develop this further in the next sections.
+In the context of Q-learning, what the Agent observes is an adaptation of the State "s", this is similar to a processed picture of what is happening in the Environment at time t. One of the innovations of the paper of Mnih et al. (2013) is the Memory Replay, which gives the Agent more information about the previous states, we will develop this further in the next sections.
 
-The center of this method is no other than the $$Q_{\pi}(s,a)$$ function, which receives input "s" and a possible action "a" that belongs to a set of possible actions A. This is a function that, in a current state s, gives the Agent the total reward following action a, given that it will follow a certain policy (strategy) $$\pi$$ afterwards.  
+The center of this method is no other than estimating the $$Q_{\pi}(s,a)$$ function, which receives input "s" and a possible action "a" that belongs to a set of possible actions A. This is a function that, in a current state s, gives the Agent the total reward following action a, given that it will follow a certain policy (strategy) $$\pi$$ afterwards.  
 
-Thus, we can separate this Q function in two part, the present (inmediate) reward in i and the following reward in i+t. This relation is given in the Bellman's equation. Note that there are two reasons why a certain action $$a_1$$ might give a higher value for Q than antoher action $$a_2$$: either it gives an inmediate higher reward or it can also be that because after undertaking either of those actions we end up in a different state where even if we followed the same policy we will not be able to reach the amount of reward.
+Thus, we can separate this Q function in two part, the present (inmediate) reward r in i and the following reward in i+t $$\pi$$. This relation is given in the Bellman's equation. Note that there are two reasons why a certain action $$a_1$$ might give a higher value for Q than antoher action $$a_2$$. On the one hand, it can give an inmediate higher reward. On the other hand, it can also be that because after undertaking either of those actions we end up in a different state $$s_2$$ or $$s^'_2 where even if we followed the same policy afterwards we will not be able to reach the same amount of total reward.
 
-Now, if we had the function Q, then it would be obvious that the only optimal policy in si would be the one that maximizes Q this is: $$\pi_Q(s) = max_a Q(s,a)$$ at every state: the solution would be trivial. The problem is that we do not know the function Q. **Thus, the main idea would be to estimate Q.**
+Now, if we had the function Q, then it would be obvious that the only optimal policy in $$s_i$$ would be the one that maximizes Q this is: $$\pi_Q(s) = max_a Q(s,a)$$ at every state: the solution would be trivial. The problem is that we do not know the function Q. **Thus, the main idea would be to estimate Q**.
 
-We can do so in two main ways: either in a parametric way, meaning that we suppose the shape of Q and we estimate it's parameter $$\Theta$$ or we can use Deep Neural Networks.
+There are two main ways of doing so: either in a parametric way, meaning that we suppose the shape of Q and we estimate its parameter $$\theta$$ or we can use Deep Neural Networks. The latter is known as DQN.
 
 ## About the Bellman equation
 
@@ -42,15 +42,13 @@ $$
 Q^{Optimal}(s,a) = r + \gamma \max_{a'} Q^{Optimal}(s', a')
 $$
 
-
-
 ## What was done in the past
 
 In previous works what was done is to do iterations or assume a parametric form of Q, in the paper of Mnih et al. (2013) they propose to estimate it using Neural Networks.
 
 ## Important remarks
 
-The model does not know the real behavior of E (like the physics in  CartPole) it only knows a set: ($$s_{t-1}$$, $$a_t$$, r, $$s_{t}$$)
+The model does not know the real behavior of E (like the physics in  CartPole) it only knows a set: ($$s_{t-1}$$, $$a_t$$, r, $$s_{t}$$) for which a certain number of them (M) are stored in the Replay Memory.
 
 The model tries to explore new actions even if they are not meant to be done in the policy, this is call off-policy and what it is trying to do is to learn new behaviors that might give higher rewards.
 
@@ -82,21 +80,25 @@ $$
 
 When using Stochastic Gradient Descent (SGD), the expectation term can be approximated by computing the gradient over a finite minibatch of samples.
 
-The model is updated at each time step, where a time step corresponds to a single interaction between the agent and the environment: the agent observes the current state, selects an action, receives a reward, and transitions to a new state. Each observed transition $(s_t, a_t, r_t, s_{t+1})$ is stored in a replay memory buffer.
+The model is updated at each time step, where a time step corresponds to a single interaction between the agent and the environment: the agent observes the current state, selects an action, receives a reward, and transitions to a new state. Each observed transition $(s_t, a_t, r_t, s_{t+1})$ is stored in a Replay Memory buffer.
 
-The main problem in previous works is that when training, the states where quite similars. This is due to the fact that, for example, when training CartPole, if the Agent moved the pole to the left multiple times and it gave a reward, it will probably continue to make the action to go to the left again. Instead of training the network using only the most recent transition, a random minibatch of transitions is sampled from the replay memory at every time step to perform a gradient descent update. By using this procedure, the model avoids strong correlations between consecutive and similar states. Moreover, it allows previously observed transitions to be reused multiple times, improving data efficiency and making the training process more stable.
+### Why SGD?
+
+The main problem in previous works is that when training, the states where quite similars. This is due to the fact that, for example, when training CartPole, if the Agent moved the pole to the left multiple times and it gave a reward, it will probably continue to make the action to go to the left again. However, at some point if it only did Left, it will fall. Instead of training the network using only the most recent transition, a random minibatch of transitions is sampled from the replay memory at every time step to perform a gradient descent update. By using this procedure, the model avoids strong correlations between consecutive and similar states. Moreover, it allows previously observed transitions to be reused multiple times, improving data efficiency and making the training process more stable.
+
+### ε-greedy policy
 
 Each time the model takes an action, it follows an $\varepsilon$-greedy policy: with probability $\varepsilon$ a random action is selected to explore new actions instead of the one that we think maximizes Q, and with probability $1-\varepsilon$ the action with the highest estimated Q-value is chosen according to the current network parameters.
 
-Since the transitions sampled from the replay memory may have been generated by older policies, the learning process is off-policy, which justifies the use of Q-learning in the DQN framework.
+Since the transitions sampled from the Replay Memory may have been generated by older policies, the learning process is off-policy, which justifies the use of Q-learning in the DQN framework.
 
 ## Setting
 
-The idea of the procedure is quite easy: the Agent takes an action, the Environment gives it the Picture $$x_t$$ and a reward r.
+The idea of the procedure is quite easy: the Agent takes an action, the Environment gives it the Picture (which is then processed by the CNN) $$x_t$$ and a reward r.
 
 The optimal action-value function Q we want is: $$Q^*(s,a) = \max_{\pi} \; \mathbb{E} \left[ \sum_{t=0}^{\infty} \gamma^t r_t \;\middle|\; s_0 = s,\; a_0 = a,\; \pi \right]$$.
 
-What the agent really sees is a State $$s_t = ((x_1,a_1),(x_2,a_2),.....,(x_{t-1},a_{t-1}), x_t)$$
+What the Agent really sees is a State $$s_t = ((x_1,a_1),(x_2,a_2),.....,(x_{t-1},a_{t-1}), x_t)$$
 
 ## Explanation of the general Algorithm
 
@@ -108,7 +110,7 @@ First, they **initialize a buffer for the replay memory with capacity N** and th
 
 Second, they use an outer loop for M episodes that gives the real state (the image) of the game, they call that $$x_t$$ and **they use a CNN to feed it to the model**. 
 
-Third, in an inner loop for t in 1 to T times, the Agent will choose with probability $$\epsilon$$ a random action $$a_t$$ and with probability $$1-\epsilon$$ the action that maximizes the Q function based on state $$s_t$$. Then, the environment will yield a reward $$r_t$$ and the new state $$s_{t+1}$$. **Following that, they store the processed image of state, the reward and the action in t and the new processed state in the memory replay**. Finally, they take a mini-batch randomly from the memory replay, compute the target y and perform a gradient descent. 
+Third, in an inner loop for t in 1 to T times, the Agent will choose with probability $$\epsilon$$ a random action $$a_t$$ and with probability $$1-\epsilon$$ the action that maximizes the Q function based on state $$s_t$$. Then, the environment will yield a reward $$r_t$$ and the new state $$s_{t+1}$$. **Following that, they store the processed image of state, the reward and the action in t and the new processed state in t+1 in the memory replay**. Finally, they take a mini-batch randomly from the memory replay, compute the target y and perform a gradient descent. 
 
 The elements that are in bold are the ones that correspond to the innovation of the paper.
 
@@ -166,14 +168,27 @@ Our CNN consists of two convolutional layers followed by two fully connected lay
 
 ### Metric evaluation
 
-For the first metric we see the same problem as for the CartPole setting, the courve oscilates a lot but it seems to be stationary. For the 1000 episodes, it seels to stagnate arround 12 rewards and for the 2000 episodes, it jumps to 15 rewards. We clearly see a progress when increasing the number of episodes. It would be interesting to test with more episodes (likely 5000) the outcome. We did not test with more episodes it due to the training time and capacity limitations. From the litterature, some examples with more episodes can be found in the blog of Stas Olekhnovich quoted in the References. 
+For the first metric we see the same problem as for the CartPole setting, the courve oscilates a lot but it seems to be stationary. For the 1000 episodes, it seems to stagnate arround 12 rewards and for the 2000 episodes, it stagnates at 15 rewards. We clearly see a progress when increasing the number of episodes. It would be interesting to test with more episodes (likely 5000) the outcome. We did not test with more episodes due to the training time and capacity limitations. From the litterature, some examples with more episodes can be found in the blog of Stas Olekhnovich quoted in the References. 
 
-For the second metric, we clearly see a decreacing tendency. In fact, in this case we also took 128 states and followed them for 500 episodes taking the average of the maximum of Q function and we found that 
+For the second metric, we clearly see a decreacing tendency. In fact, we took 128 states and followed them for 500 episodes taking the average of the maximum of Q function and we found that the maximum increases for the first 100 episodes and then it slowly decreases. This means that at the begining, the model increases its value of the future but as the episodes increase, it starts valuating it less. This might be due to an overfitting problem or perhaps that the model has not learn yet enough about the environment to know that it might need to increase its value of the future. To solve this a fine tunning should be conducted to chose the right number of episodes.
 
-For the third metric, we see that the value of the maximum of Q is stable at the begining of the episode but it decreases slowly afterwards, it drops to 0. This behavior is weird in the sense that the Agent seems to be value future almost as nothing (close to 0), meaning that it will try to solve current conjonctures without considering the issues it might cause in the future. The fact that it drops to 0 is even worst, our Agent might be thinking that there are almost (or none) blocks left, which obviusly leads to erratic behavior at the middle of the game. When comparing to the GIF for breakout, we see that these behavior becomes clear: in the games where the Agent manages to destroy a lot of blocks, it makes really big blinds which causes the game to end drastically. 
+For the third metric, we see that the value of the maximum of Q is stable at the begining of the episode but it decreases slowly afterwards to 0. This behavior is weird in the sense that the Agent seems to value future almost as nothing (close to 0). We expected this behavior to happend at when the Agent is about to break the last block because afterwards there is no future. However, from our test we did not manage to see that the Agent broke all the blocks. This means that after 100 episodes, the Agent is trying to solve current conjonctures without considering the issues it might cause in the future. The fact that it drops to 0 is even worst, our Agent might be thinking that there are almost (or none) blocks left, which obviusly leads to erratic behavior at the middle of the game. When comparing to the GIF for breakout, we see that this behavior becomes clear: in the games where the Agent manages to destroy a lot of blocks, it makes really big blounders which causes the game to end drastically. 
 
-Finally, for the last metric, the Agent has a certain directional bias for the left but this is quite small over the last 100 episodes, 52% of actions were left against 48% which were right. This is not surprising as the numbers are not that different but it shows that the Agent is not trained evenly to go to the right or to the left which might cause some early stopping of the episodes. 
+Finally, for the last metric that is evaluated over the last 100 episodes, the Agent has a certain directional bias in favour of the action Left but it is quite small: 52% of actions were Left against 48% which were Right. This is not surprising as the numbers are not that different but it shows that the Agent is not trained evenly to go to the right or to the left which might cause some early stopping of the episodes due to blounders. 
+
+For printing results please refer to the Breakout Notebook:
+--- Summary of directonnaly bias ---
+Total 'LEFT' actions: 2091
+Total 'RIGHT' actions: 1935
+Ratio 'LEFT': 0.52
+Ratio 'RIGHT': 0.48
+The Agent seems to have a preference for the 'LEFT'.
 
 # References
 
 Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., & Riedmiller, M. (2013). Playing Atari with Deep Reinforcement Learning. *arXiv preprint arXiv:1312.5602*. https://doi.org/10.48550/arXiv.1312.5602
+
+PyTorch Contributors. (2023). Reinforcement Learning (DQN) Tutorial. PyTorch Documentation. https://docs.pytorch.org/tutorials/intermediate/reinforcement_q_learning.html
+
+Olekhnovich, S. (2020). Walking through the original DQN paper. Medium. https://stas-olekhnovich.medium.com/walking-through-original-dqn-paper-af064a5cbe4f
+
