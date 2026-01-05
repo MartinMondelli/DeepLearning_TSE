@@ -166,13 +166,23 @@ Falls right: 1000
 Following Mnih et al. (2013), for Breakout the environment provides a 2D representation of the game (pixels). Therefore, we use a convolutional neural network (CNN) to approximate the Q-function from these states.  
 Our CNN consists of two convolutional layers followed by two fully connected layers with ReLU activations. This design allows the network to extract spatial features from the game frames before computing the Q-values for all possible actions, closely following the architecture described in the original DQN paper.
 
+![Breakout GIF](images_breakout/breakout_animation.gif)
+
 ### Metric evaluation
 
 For the first metric we see the same problem as for the CartPole setting, the courve oscilates a lot but it seems to be stationary. For the 1000 episodes, it seems to stagnate arround 12 rewards and for the 2000 episodes, it stagnates at 15 rewards. We clearly see a progress when increasing the number of episodes. It would be interesting to test with more episodes (likely 5000) the outcome. We did not test with more episodes due to the training time and capacity limitations. From the litterature, some examples with more episodes can be found in the blog of Stas Olekhnovich quoted in the References. 
 
+![Breakout Metric 1 1](images_breakout/Metric1_1.png)
+
+![Breakout Metric 1 2](images_breakout/Metric1_2.png)
+
 For the second metric, we clearly see a decreacing tendency. In fact, we took 128 states and followed them for 500 episodes taking the average of the maximum of Q function and we found that the maximum increases for the first 100 episodes and then it slowly decreases. This means that at the begining, the model increases its value of the future but as the episodes increase, it starts valuating it less. This might be due to an overfitting problem or perhaps that the model has not learn yet enough about the environment to know that it might need to increase its value of the future. To solve this a fine tunning should be conducted to chose the right number of episodes.
 
+![Breakout Metric 2](images_breakout/Metric2.png)
+
 For the third metric, we see that the value of the maximum of Q is stable at the begining of the episode but it decreases slowly afterwards to 0. This behavior is weird in the sense that the Agent seems to value future almost as nothing (close to 0). We expected this behavior to happend at when the Agent is about to break the last block because afterwards there is no future. However, from our test we did not manage to see that the Agent broke all the blocks. This means that after 100 episodes, the Agent is trying to solve current conjonctures without considering the issues it might cause in the future. The fact that it drops to 0 is even worst, our Agent might be thinking that there are almost (or none) blocks left, which obviusly leads to erratic behavior at the middle of the game. When comparing to the GIF for breakout, we see that this behavior becomes clear: in the games where the Agent manages to destroy a lot of blocks, it makes really big blounders which causes the game to end drastically. 
+
+![Breakout Metric 3](images_breakout/Metric3.png)
 
 Finally, for the last metric that is evaluated over the last 100 episodes, the Agent has a certain directional bias in favour of the action Left but it is quite small: 52% of actions were Left against 48% which were Right. This is not surprising as the numbers are not that different but it shows that the Agent is not trained evenly to go to the right or to the left which might cause some early stopping of the episodes due to blounders. 
 
